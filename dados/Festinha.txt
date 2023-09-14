@@ -1,0 +1,1 @@
+{"nome":"Festinha","N1":"37","N2":"39","resultado":76}

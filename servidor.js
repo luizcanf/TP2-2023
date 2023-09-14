@@ -1,19 +1,27 @@
 const arquivos = require('fs')
 const express = require('express')
 const app = express()
-app.use(express.urlencoded({ extended: true }))
+//const bp = require('body-parser')
+//app.use(bp.urlencoded({ extended: true }))
+app.use(express.json())
 
 function fatorial(n) {
     if (n == 0) {
         return 1;
     }
     var resp = n;
+    let result
     while (n > 2) {
         resp *= --n;
         result = resp;
     }
     return result;
 }
+
+app.use((req, res, next) => {
+    console.log('Requisição recebida em ', Date.now());
+    next();
+});
 
 app.get("/operacoes", (req, res) => {
     //result = parseFloat(n1.value) + parseFloat(n2.value);
@@ -42,10 +50,32 @@ app.get("/operacoes", (req, res) => {
     res.send({ conta: req.query });
 });
 
+app.get("/soma", (req, res) => {
+    //result = parseFloat(n1.value) + parseFloat(n2.value);
+    const nome = req.query.nome
+    console.log("Recebi uma requisição de conta de ", nome);
+    const n1 = parseFloat(req.query.N1)
+    const n2 = parseFloat(req.query.N2)
+    const op = req.query.op
+    let result = n1 + n2
+
+    let nomeArq = "dados/" + nome + ".txt"
+    //let resultadoArq = {N1: n1, N2: n2, op: op, resultado: result}
+    //resultadoArq = JSON.stringify(resultadoArq)
+
+    req.query.resultado = result
+    let resultadoArq = JSON.stringify(req.query)
+
+    arquivos.writeFileSync(nomeArq, resultadoArq)
+    res.send({ conta: req.query });
+});
+
 const rotaFatorial = app.route("/fat");
 rotaFatorial.post((req, res) => {
     const n1 = req.body.N1
+    console.log(req.body);
     const result = fatorial(n1)
+    console.log(`${n1}! = ${result}`)
     res.send({ conta: result });
 })
 
@@ -74,9 +104,13 @@ const rotaDelete = app.route("/apagaconta/:nome");
 rotaDelete.get((req, res) => {
     const arq = "dados/" + req.params.nome;
     arquivos.unlink(arq, () => {
-        res.send({msg: "Arquivo apagado: " + req.params.nome});
+        res.send({ msg: "Arquivo apagado: " + req.params.nome });
     });
 })
+
+app.use((req, res, next) => {
+    res.send({erro: true, msg: "Rota não definida no servidor."})
+});
 
 porta = 8080
 console.log("Servidor funcionando na porta " + porta);

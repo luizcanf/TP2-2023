@@ -1,0 +1,1 @@
+{"nome":"IrmãodoJorel","N1":"20","N2":"23","resultado":43}
