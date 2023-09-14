@@ -10,7 +10,7 @@ function fatorial(n) {
         return 1;
     }
     var resp = n;
-    let result
+    let result;
     while (n > 2) {
         resp *= --n;
         result = resp;
