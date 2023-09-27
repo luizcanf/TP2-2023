@@ -19,7 +19,8 @@ function fatorial(n) {
 }
 
 app.use((req, res, next) => {
-    console.log('Requisição recebida em ', Date.now());
+    const data = new Date()
+    console.log('Requisição recebida em ', data);
     next();
 });
 
