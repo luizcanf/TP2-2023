@@ -5,6 +5,18 @@ const app = express()
 //app.use(bp.urlencoded({ extended: true }))
 app.use(express.json())
 
+global.db = require('./db');
+
+app.route("/testedb")
+    .get(async (req, res, next) => {
+        try {
+            const msgDoMongo = await global.db.salvar({ teste: "Cesar" });
+            res.send({ app: 'Tentei salvar o objeto no BD.', mongo: msgDoMongo })
+        } catch (err) {
+            next(err);
+        }
+    })
+
 function fatorial(n) {
     if (n == 0) {
         return 1;
@@ -24,7 +36,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get("/operacoes", (req, res) => {
+app.get("/operacoes", async (req, res, next) => {
     //result = parseFloat(n1.value) + parseFloat(n2.value);
     const nome = req.query.nome
     console.log("Recebi uma requisição de conta de ", nome);
@@ -47,7 +59,13 @@ app.get("/operacoes", (req, res) => {
     req.query.resultado = result
     let resultadoArq = JSON.stringify(req.query)
 
-    arquivos.writeFileSync(nomeArq, resultadoArq)
+    //arquivos.writeFileSync(nomeArq, resultadoArq)
+    try {
+        const msgDoMongo = await global.db.salvar(resultadoArq);
+        res.send({ app: 'Tentei salvar o objeto no BD.', mongo: msgDoMongo })
+    } catch (err) {
+        next(err);
+    }
     res.send({ conta: req.query });
 });
 
@@ -110,7 +128,7 @@ rotaDelete.get((req, res) => {
 })
 
 app.use((req, res, next) => {
-    res.send({erro: true, msg: "Rota não definida no servidor."})
+    res.send({ erro: true, msg: "Rota não definida no servidor." })
 });
 
 porta = 8080
