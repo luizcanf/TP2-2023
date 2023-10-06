@@ -2,8 +2,13 @@ const bancoDados = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
 //const { MongoClient } = require('mongodb');
 
-//const uri = "mongodb+srv://cesar:rasec@tp2.bmv5w.mongodb.net/tp2?retryWrites=true&w=majority";
-const uri = "mongodb://localhost:27017"
+const { config } = require('dotenv');
+if (process.env.NODE_ENV !== 'PROD')
+    config({ path: './config/.env.dev' });
+else
+    config({ path: './config/.env.prod' });
+
+const uri = process.env.DB
 /*const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
 const collection = client.db("tp2").collection("operacoes");

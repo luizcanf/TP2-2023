@@ -1,3 +1,8 @@
+/*
+const { config } = require('dotenv');
+config({ path: './config/.env' });
+console.log(process.env.ABC)
+*/
 const arquivos = require('fs')
 const express = require('express')
 const app = express()
