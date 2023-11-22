@@ -25,6 +25,10 @@ function busqueTodas() {
     return global.conn.collection("operacoes").find().toArray();
 }
 
+function busqueOperacao(ID_Op) {
+    return global.conn.collection("operacoes").findOne(new ObjectId(ID_Op));
+}
+
 function salvar(operacao) {
     return global.conn.collection("operacoes").insertOne(operacao);
 }
@@ -32,4 +36,4 @@ function salvar(operacao) {
 function apagarUmaOperacao(id) {
     return global.conn.collection("operacoes").deleteOne({ _id: ObjectId(id) });
 }
-module.exports = { busqueTodas, salvar, apagarUmaOperacao };
+module.exports = { busqueTodas, busqueOperacao, salvar, apagarUmaOperacao };
